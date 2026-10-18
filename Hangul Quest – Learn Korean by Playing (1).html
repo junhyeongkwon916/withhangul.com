@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hangul Quest – Learn Korean by Playing</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#222;--mut:#777;--acc:#e8505b;--ok:#2e9e6a;--bad:#d64545;--line:#e6e0d6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--card:#232328;--ink:#f1f1f1;--mut:#9a9aa3;--acc:#ff7a85;--ok:#4cc58a;--bad:#ff6b6b;--line:#35353c}}
+:root[data-theme="dark"]{--bg:#17171a;--card:#232328;--ink:#f1f1f1;--mut:#9a9aa3;--acc:#ff7a85;--ok:#4cc58a;--bad:#ff6b6b;--line:#35353c}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+#app{width:100%;max-width:480px;margin:0 auto;padding:16px}
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+
+.stats{font-size:14px;color:var(--mut);display:flex;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.mode{display:flex;gap:14px;align-items:center;cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit}
+.mode b{display:block;font-size:17px}.mode small{color:var(--mut)}
+.mode .ic{font-size:30px;width:48px;text-align:center}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:600}
+.ghost{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 12px;color:var(--mut)}
+.big{font-size:64px;text-align:center;margin:10px 0;font-weight:700}
+.sub{text-align:center;color:var(--mut);margin:0 0 10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt,.tile{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:14px 8px;font-size:17px;text-align:center}
+.opt.ok,.tile.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
+.opt.bad,.tile.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--card))}
+.opt.sel,.tile.sel{border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{font-size:24px;padding:16px 8px}.tile.rom{font-size:18px}.tile.gone{visibility:hidden}
+.slots{display:flex;gap:8px;justify-content:center;margin:14px 0;min-height:64px}
+.slot{width:60px;height:64px;border:2px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px}
+.slot.f{border-style:solid;border-color:var(--acc)}
+.pool{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pool .tile{min-width:64px;font-size:28px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.fb{text-align:center;min-height:26px;margin-top:10px;font-weight:600}
+.tip{font-size:13px;color:var(--mut)}
+
+nav{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;max-width:960px;margin:0 auto}
+.logo{font-weight:800;font-size:20px}.logo span{color:var(--acc)}
+.lang{display:flex;gap:6px}.lang button{background:none;border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:13px;color:var(--mut)}.lang button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.pic{font-size:56px;text-align:center;line-height:1.1}.big{overflow-wrap:anywhere}
+.blks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px}.blks svg{width:100%;height:auto}
+.bx{fill:var(--card);stroke:var(--acc);stroke-width:2}.gl{fill:var(--ink);font-size:30px;font-weight:700;text-anchor:middle;dominant-baseline:central}.op{fill:var(--mut);font-size:24px;text-anchor:middle;dominant-baseline:central}.rd{fill:var(--mut);font-size:15px;text-anchor:middle}
+nav a{color:var(--mut);text-decoration:none;font-size:15px;margin-left:16px}
+.hero{text-align:center;padding:44px 20px 28px;max-width:720px;margin:0 auto}
+.hero h1{font-size:clamp(32px,8vw,52px);line-height:1.15;margin:0 0 14px}
+.hero h1 em{color:var(--acc);font-style:normal}
+.hero p{color:var(--mut);font-size:18px;margin:0 0 22px}
+.cta{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:14px 26px;border-radius:14px;font-weight:700}
+.sec{max-width:960px;margin:0 auto;padding:32px 20px}
+.sec h2{font-size:26px;margin:0 0 6px;text-align:center}.sec>p{color:var(--mut);text-align:center;margin:0 0 20px}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.feats .card{margin:0}.feats b{display:block;margin:6px 0 4px}.feats span{color:var(--mut);font-size:15px}
+.chart{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px}
+.chart div{background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:center;padding:10px 4px}
+.chart b{font-size:28px;display:block}.chart small{color:var(--mut)}
+#play{scroll-margin-top:12px}
+footer{text-align:center;color:var(--mut);font-size:14px;padding:30px 20px calc(30px + env(safe-area-inset-bottom,0px))}
+</style></head>
+<body>
+<nav><div class="logo">한글 <span>Quest</span></div><div class="lang"><button data-l="en">EN</button><button data-l="ja">日本語</button><button data-l="fr">FR</button></div><div><a href="#play" data-i="nav_play">Play</a><a href="#alphabet" data-i="nav_alpha">Alphabet</a><a href="#how" data-i="nav_how">How it works</a></div></nav>
+<section class="hero"><h1 data-i="h1">Learn Korean <em>by playing</em></h1><p data-i="hero_p">Master Hangul.</p><a class="cta" href="#play" data-i="cta">Start playing ▶</a></section>
+<section class="sec" id="play"><h2 data-i="play_h">Play now</h2><p data-i="play_p">Pick a game.</p>
+<div id="app"><div class="gh"><b style="font-size:18px">한글 Quest</b><div class="stats"><span id="xp">⭐ 0</span><span id="best">🔥 0</span></div></div><div id="stage"></div></div></section>
+<section class="sec" id="how"><h2 data-i="how_h">How it works</h2><p data-i="how_p">Three quick games.</p><div class="feats">
+<div class="card"><div style="font-size:30px">🔤</div><b data-i="f1b">1. Letter Match</b><span data-i="f1s">Pair each Hangul letter with its sound.</span></div>
+<div class="card"><div style="font-size:30px">🧠</div><b data-i="f2b">2. Word Quiz</b><span data-i="f2s">Guess the meaning of everyday Korean words.</span></div>
+<div class="card"><div style="font-size:30px">🧩</div><b data-i="f3b">3. Syllable Puzzle</b><span data-i="f3s">Build real words from syllable tiles.</span></div></div></section>
+<section class="sec" id="blocks"><h2 data-i="blk_h">How blocks are built</h2><p data-i="blk_p">Hangul letters stack into square blocks. Each block is one syllable.</p><div class="blks card" style="padding:10px"><svg viewBox="0 0 322 120" role="img" aria-label="사"><rect class="bx" x="30" y="20" width="56" height="56" rx="10"/><text class="gl" x="58" y="49">ㅅ</text><text class="op" x="98" y="49">+</text><rect class="bx" x="110" y="20" width="56" height="56" rx="10"/><text class="gl" x="138" y="49">ㅏ</text><text class="op" x="178" y="49">=</text><rect class="bx" style="stroke:var(--ok)" x="200" y="14" width="68" height="68" rx="12"/><text class="gl" style="font-size:40px" x="234" y="49">사</text><text class="rd" x="234" y="104" data-r="sa|さ">sa</text></svg><svg viewBox="0 0 322 120" role="img" aria-label="모"><rect class="bx" x="30" y="20" width="56" height="56" rx="10"/><text class="gl" x="58" y="49">ㅁ</text><text class="op" x="98" y="49">+</text><rect class="bx" x="110" y="20" width="56" height="56" rx="10"/><text class="gl" x="138" y="49">ㅗ</text><text class="op" x="178" y="49">=</text><rect class="bx" style="stroke:var(--ok)" x="200" y="14" width="68" height="68" rx="12"/><text class="gl" style="font-size:40px" x="234" y="49">모</text><text class="rd" x="234" y="104" data-r="mo|も">mo</text></svg><svg viewBox="0 0 322 120" role="img" aria-label="한"><rect class="bx" x="8" y="20" width="56" height="56" rx="10"/><text class="gl" x="36" y="49">ㅎ</text><text class="op" x="76" y="49">+</text><rect class="bx" x="82" y="20" width="56" height="56" rx="10"/><text class="gl" x="110" y="49">ㅏ</text><text class="op" x="150" y="49">+</text><rect class="bx" x="156" y="20" width="56" height="56" rx="10"/><text class="gl" x="184" y="49">ㄴ</text><text class="op" x="224" y="49">=</text><rect class="bx" style="stroke:var(--ok)" x="246" y="14" width="68" height="68" rx="12"/><text class="gl" style="font-size:40px" x="280" y="49">한</text><text class="rd" x="280" y="104" data-r="han|はん">han</text></svg></div></section>
+<section class="sec" id="alphabet"><h2 data-i="al_h">Hangul cheat sheet</h2><p data-i="al_p">Consonant + vowel.</p><div class="chart"><div><b>ㄱ</b><small>g / k</small></div><div><b>ㄴ</b><small>n</small></div><div><b>ㄷ</b><small>d / t</small></div><div><b>ㄹ</b><small>r / l</small></div><div><b>ㅁ</b><small>m</small></div><div><b>ㅂ</b><small>b / p</small></div><div><b>ㅅ</b><small>s</small></div><div><b>ㅇ</b><small>ng / silent</small></div><div><b>ㅈ</b><small>j</small></div><div><b>ㅎ</b><small>h</small></div><div><b>ㅏ</b><small>a</small></div><div><b>ㅓ</b><small>eo</small></div><div><b>ㅗ</b><small>o</small></div><div><b>ㅜ</b><small>u</small></div><div><b>ㅣ</b><small>i</small></div><div><b>ㅡ</b><small>eu</small></div></div></section>
+<footer>Made with Claude · Hangul Quest</footer>
+<script>
+(function(){"use strict";
+const L=[["ㄱ","g / k"],["ㄴ","n"],["ㄷ","d / t"],["ㄹ","r / l"],["ㅁ","m"],["ㅂ","b / p"],["ㅅ","s"],["ㅇ","ng / silent"],["ㅈ","j"],["ㅎ","h"],["ㅏ","a"],["ㅓ","eo"],["ㅗ","o"],["ㅜ","u"],["ㅣ","i"],["ㅡ","eu"]];
+const W=[["물","mul","water"],["밥","bap","rice / meal"],["집","jip","house"],["책","chaek","book"],["사랑","sarang","love"],["학교","hakgyo","school"],["친구","chingu","friend"],["고양이","goyangi","cat"],["강아지","gangaji","puppy"],["나무","namu","tree"],["하늘","haneul","sky"],["바다","bada","sea"],["사과","sagwa","apple"],["우유","uyu","milk"],["안녕","annyeong","hello"],["감사","gamsa","thanks"]];
+const T={"en": {"nav_play": "Play", "nav_alpha": "Alphabet", "nav_how": "How it works", "h1": "Learn Korean <em>by playing</em>", "hero_p": "Master Hangul, the Korean alphabet, with short puzzle games made for English, Japanese and French speakers. No signup, free to play.", "cta": "Start playing ▶", "play_h": "Play now", "play_p": "Pick a game and earn XP as you learn.", "how_h": "How it works", "how_p": "Three quick games, one step at a time.", "f1b": "1. Letter Match", "f1s": "Pair each Hangul letter with its sound.", "f2b": "2. Word Quiz", "f2s": "Guess the meaning of everyday Korean words.", "f3b": "3. Syllable Puzzle", "f3s": "Build real words from syllable tiles.", "al_h": "Hangul cheat sheet", "al_p": "Consonant + vowel = one syllable block. Example: ㅅ + ㅏ = 사 (sa).", "pick": "Learn Korean by playing. Pick a game!", "lm": "Letter Match", "m1d": "Pair Hangul letters with their sounds", "quizT": "Word Quiz", "m2d": "Guess the meaning of common words", "pt": "Syllable Puzzle", "m3d": "Assemble the Korean word from tiles", "tip": "Tip: Hangul is built from blocks. Consonant + vowel = one syllable, like ㅅ + ㅏ = 사 (sa).", "menu": "Menu", "total": "Total XP", "bestS": "Best streak", "again": "Play again", "tapL": "Tap a letter, then its sound", "ok": "Correct!", "retry": "Try again", "ldone": "Letters mastered!", "whichK": "Which Korean word means", "whatM": "What does this mean?", "qdone": "Quiz complete!", "buildFor": "Build the word for", "nope": "Not that one", "pdone": "Puzzles solved!"}, "ja": {"nav_play": "遊ぶ", "nav_alpha": "文字表", "nav_how": "遊び方", "h1": "遊びながら<em>韓国語</em>を学ぼう", "hero_p": "英語・日本語・フランス語話者のための短いパズルゲームで、韓国語の文字ハングルをマスター。登録不要、無料です。", "cta": "プレイ開始 ▶", "play_h": "今すぐプレイ", "play_p": "ゲームを選んで、学びながらXPを獲得しよう。", "how_h": "遊び方", "how_p": "3つのゲームで、少しずつ上達。", "f1b": "1. 文字マッチ", "f1s": "ハングルの文字を音とペアにします。", "f2b": "2. 単語クイズ", "f2s": "日常の韓国語単語の意味を当てます。", "f3b": "3. 音節パズル", "f3s": "音節タイルで本物の単語を作ります。", "al_h": "ハングル早見表", "al_p": "子音＋母音で1つの音節ブロックになります。例：ㅅ + ㅏ = 사 (sa)", "pick": "遊びながら韓国語を学ぼう。ゲームを選んでね！", "lm": "文字マッチ", "m1d": "ハングルの文字と音をペアにしよう", "quizT": "単語クイズ", "m2d": "よく使う単語の意味を当てよう", "pt": "音節パズル", "m3d": "タイルを並べて韓国語の単語を作ろう", "tip": "ヒント：ハングルは子音＋母音で1つの音節になります。例：ㅅ + ㅏ = 사 (sa)", "menu": "メニュー", "total": "合計XP", "bestS": "最高連続正解", "again": "もう一度", "tapL": "文字をタップして、対応する音をタップ", "ok": "正解！", "retry": "もう一度", "ldone": "文字をマスター！", "whichK": "次の意味の韓国語は？", "whatM": "どんな意味？", "qdone": "クイズ完了！", "buildFor": "この単語を作ろう", "nope": "それじゃないよ", "pdone": "パズル完了！"}, "fr": {"nav_play": "Jouer", "nav_alpha": "Alphabet", "nav_how": "Comment ça marche", "h1": "Apprenez le coréen <em>en jouant</em>", "hero_p": "Maîtrisez le hangeul, l’alphabet coréen, grâce à de courts jeux de réflexion pour anglophones, japonophones et francophones. Gratuit, sans inscription.", "cta": "Jouer maintenant ▶", "play_h": "Jouez maintenant", "play_p": "Choisissez un jeu et gagnez des XP en apprenant.", "how_h": "Comment ça marche", "how_p": "Trois jeux rapides, une étape à la fois.", "f1b": "1. Association de lettres", "f1s": "Associez chaque lettre à son son.", "f2b": "2. Quiz de mots", "f2s": "Devinez le sens de mots coréens du quotidien.", "f3b": "3. Puzzle de syllabes", "f3s": "Construisez de vrais mots avec des tuiles.", "al_h": "Aide-mémoire du hangeul", "al_p": "Consonne + voyelle = un bloc syllabique. Exemple : ㅅ + ㅏ = 사 (sa).", "pick": "Apprenez le coréen en jouant. Choisissez un jeu !", "lm": "Association de lettres", "m1d": "Associez les lettres hangeul à leur son", "quizT": "Quiz de mots", "m2d": "Devinez le sens de mots courants", "pt": "Puzzle de syllabes", "m3d": "Assemblez le mot coréen avec des tuiles", "tip": "Astuce : le hangeul se construit en blocs. Consonne + voyelle = une syllabe, ex. ㅅ + ㅏ = 사 (sa).", "menu": "Menu", "total": "XP total", "bestS": "Meilleure série", "again": "Rejouer", "tapL": "Touchez une lettre, puis son son", "ok": "Correct !", "retry": "Réessayez", "ldone": "Lettres maîtrisées !", "whichK": "Quel mot coréen signifie", "whatM": "Que signifie ce mot ?", "qdone": "Quiz terminé !", "buildFor": "Construisez le mot pour", "nope": "Pas celle-ci", "pdone": "Puzzles réussis !"}};const JA=["水", "ごはん", "家", "本", "愛", "学校", "友だち", "猫", "子犬", "木", "空", "海", "りんご", "牛乳", "こんにちは", "感謝"],FR=["eau", "riz / repas", "maison", "livre", "amour", "école", "ami", "chat", "chiot", "arbre", "ciel", "mer", "pomme", "lait", "bonjour", "merci"];
+let lang="en";try{lang=localStorage.getItem("hq_lang")||(navigator.language||"en").slice(0,2)}catch(e){}if(!T[lang])lang="en";
+const t=k=>T[lang][k];const M=w=>lang=="ja"?JA[W.indexOf(w)]:lang=="fr"?FR[W.indexOf(w)]:w[2];
+Object.assign(T.en,{blk_h:"How blocks are built",blk_p:"Hangul letters stack into square blocks. Each block is one syllable."});Object.assign(T.ja,{blk_h:"ブロックのしくみ",blk_p:"ハングルは文字を組み合わせて四角いブロックにします。1ブロックが1音節です。"});Object.assign(T.fr,{blk_h:"Comment se forment les blocs",blk_p:"Les lettres s’assemblent en blocs carrés. Chaque bloc est une syllabe."});
+const LJ=["か/が", "な", "た/だ", "ら", "ま", "ぱ/ば", "さ", "無音/ん", "ちゃ/じゃ", "は", "あ", "お(広)", "お(狭)", "う(丸)", "い", "う(平)"],WJ=["むる", "ぱぷ", "ちぷ", "ちぇく", "さらん", "はっきょ", "ちんぐ", "こやんい", "かんあじ", "なむ", "はぬる", "ぱだ", "さぐわ", "うゆ", "あんにょん", "かむさ"],E=["💧", "🍚", "🏠", "📖", "❤️", "🏫", "🧑‍🤝‍🧑", "🐱", "🐶", "🌳", "☁️", "🌊", "🍎", "🥛", "👋", "🙏"];const RO=p=>lang=="ja"?LJ[L.indexOf(p)]:p[1];const MR=w=>lang=="ja"?WJ[W.indexOf(w)]:w[1];const EM=w=>E[W.indexOf(w)];
+function apply(){document.querySelectorAll(".chart div").forEach((d,i)=>d.querySelector("small").textContent=RO(L[i]));document.querySelectorAll("[data-r]").forEach(e=>{const a=e.dataset.r.split("|");e.textContent=lang=="ja"?a[1]:a[0]});document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.innerHTML=t(e.dataset.i));document.querySelectorAll("[data-l]").forEach(b=>b.classList.toggle("on",b.dataset.l==lang))}
+const $=s=>document.querySelector(s),st=$("#stage");
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+let xp=0,best=0,streak=0;
+try{xp=+localStorage.getItem("hq_xp")||0;best=+localStorage.getItem("hq_best")||0}catch(e){}
+function hud(){$("#xp").textContent="⭐ "+xp;$("#best").textContent="🔥 "+best;try{localStorage.setItem("hq_xp",xp);localStorage.setItem("hq_best",best)}catch(e){}}
+function gain(ok,n=10){if(ok){xp+=n;streak++;if(streak>best)best=streak}else streak=0;hud()}
+function menu(){
+ st.innerHTML=`<p class="sub">${t('pick')}</p>
+ <button class="card mode" data-m="match"><span class="ic">🔤</span><span><b>${t('lm')}</b><small>${t('m1d')}</small></span></button>
+ <button class="card mode" data-m="quiz"><span class="ic">🧠</span><span><b>${t('quizT')}</b><small>${t('m2d')}</small></span></button>
+ <button class="card mode" data-m="build"><span class="ic">🧩</span><span><b>${t('pt')}</b><small>${t('m3d')}</small></span></button>
+ <p class="tip">${t('tip')}</p>`;
+ st.querySelectorAll(".mode").forEach(b=>b.onclick=()=>({match,quiz,build})[b.dataset.m]());
+}
+function hd(title,prog){return `<div style="display:flex;justify-content:space-between;align-items:center"><button class="ghost" id="back">← ${t('menu')}</button><b>${title}</b></div><div class="bar"><i style="width:${prog}%"></i></div>`}
+function done(msg){st.innerHTML=`<div class="card" style="text-align:center"><div class="big">🎉</div><h2>${msg}</h2><p class="sub">${t('total')}: ${xp} · ${t('bestS')}: ${best}</p><button class="btn" id="again">${t('again')}</button> <button class="ghost" id="back">${t('menu')}</button></div>`;$("#back").onclick=menu}
+function match(){
+ const set=sh(L).slice(0,6);let found=0,a=null;
+ const left=sh(set),right=sh(set);
+ st.innerHTML=hd(t('lm'),0)+`<p class="sub">${t('tapL')}</p><div class="grid"><div id="l" style="display:grid;gap:10px"></div><div id="r" style="display:grid;gap:10px"></div></div><div class="fb" id="fb"></div>`;
+ $("#back").onclick=menu;
+ left.forEach(p=>{const b=document.createElement("button");b.className="tile";b.textContent=p[0];b.onclick=()=>{st.querySelectorAll("#l .sel").forEach(x=>x.classList.remove("sel"));a=[p,b];b.classList.add("sel")};$("#l").append(b)});
+ right.forEach(p=>{const b=document.createElement("button");b.className="tile rom";b.textContent=RO(p);b.onclick=()=>{if(!a)return;
+  if(a[0]===p){a[1].classList.add("gone");b.classList.add("gone");found++;gain(true);a=null;$(".bar i").style.width=found/6*100+"%";$("#fb").textContent="✓ "+t('ok');if(found==6)setTimeout(()=>done(t('ldone')),500)}
+  else{gain(false);b.classList.add("bad");setTimeout(()=>b.classList.remove("bad"),400);$("#fb").textContent=t('retry')}};$("#r").append(b)});
+}
+function quiz(){
+ const qs=sh(W).slice(0,8);let i=0;
+ (function next(){
+  if(i>=qs.length)return done(t('qdone'));
+  const q=qs[i],rev=i%2==1;
+  const opts=sh([q,...sh(W.filter(w=>w!==q)).slice(0,3)]);
+  st.innerHTML=hd(t('quizT')+" "+(i+1)+"/8",i/8*100)+`<p class="sub">${rev?t('whichK'):t('whatM')}</p>${rev?`<div class="pic">${EM(q)}</div>`:""}<div class="big" ${rev?'style="font-size:38px"':""}>${rev?M(q):q[0]}</div><div class="opts"></div><div class="fb"></div>`;
+  $("#back").onclick=menu;
+  opts.forEach(o=>{const b=document.createElement("button");b.className="opt";b.textContent=rev?o[0]:M(o);b.onclick=()=>{
+   if(st.querySelector(".fb").dataset.d)return;st.querySelector(".fb").dataset.d=1;
+   const ok=o===q;gain(ok);b.classList.add(ok?"ok":"bad");
+   if(!ok)st.querySelectorAll(".opt").forEach(x=>{if(x.textContent==(rev?q[0]:M(q)))x.classList.add("ok")});
+   st.querySelector(".fb").textContent=`${EM(q)} ${q[0]} (${MR(q)}) = ${M(q)}`;i++;setTimeout(next,1400)};
+   st.querySelector(".opts").append(b)});
+ })();
+}
+function build(){
+ const P=W.filter(w=>w[0].length>=2&&w[0].length<=3);const qs=sh(P).slice(0,6);let i=0;
+ (function next(){
+  if(i>=qs.length)return done(t('pdone'));
+  const q=qs[i],ch=[...q[0]];let pos=0;
+  const extra=sh([...new Set(P.flatMap(w=>[...w[0]]))].filter(c=>!ch.includes(c))).slice(0,1);
+  st.innerHTML=hd(t('pt')+" "+(i+1)+"/6",i/6*100)+`<p class="sub">${t('buildFor')}</p><div class="pic">${EM(q)}</div><div class="big" style="font-size:34px">${M(q)}</div><p class="sub">(${MR(q)})</p><div class="slots"></div><div class="pool"></div><div class="fb"></div>`;
+  $("#back").onclick=menu;
+  const sl=ch.map(()=>{const d=document.createElement("div");d.className="slot";st.querySelector(".slots").append(d);return d});
+  sh([...ch,...extra]).forEach(c=>{const b=document.createElement("button");b.className="tile";b.textContent=c;b.onclick=()=>{
+   if(b.classList.contains("gone"))return;
+   if(c===ch[pos]){sl[pos].textContent=c;sl[pos].classList.add("f");b.classList.add("gone");pos++;gain(true,5);
+    if(pos==ch.length){st.querySelector(".fb").textContent="✓ "+q[0]+" = "+M(q);gain(true,10);i++;setTimeout(next,1300)}}
+   else{gain(false);b.classList.add("bad");setTimeout(()=>b.classList.remove("bad"),400);st.querySelector(".fb").textContent=t('nope')}};
+   st.querySelector(".pool").append(b)});
+ })();
+}
+st.addEventListener("click",e=>{if(e.target.id==="again")menu()});
+hud();apply();menu();
+document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{lang=b.dataset.l;try{localStorage.setItem("hq_lang",lang)}catch(e){}apply();menu()});
+})();
+</script></body></html>
